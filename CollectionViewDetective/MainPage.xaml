@@ -13,13 +13,19 @@
 
         <Grid x:Name="DisplayGrid" Padding="10,1" RowDefinitions="Auto, *, Auto">
             <VerticalStackLayout Grid.Row="0">
-                <HorizontalStackLayout Spacing="20">
-                    <Label Text="Index of TopVisibleItem" Margin="200,0,10,0"/>
-                    <Label Text="{Binding ActualTopVisibleItemIndex, StringFormat='{0,10}'}" BackgroundColor="Bisque" MinimumWidthRequest="50"/>
-                    <Label Text="Index of BottomVisibleItem" Margin="0,0,10,0"/>
-                    <Label Text="{Binding ActualBottomVisibleItemIndex, StringFormat='{0,10}'}"   BackgroundColor="Bisque" MinimumWidthRequest="50"/>
-                </HorizontalStackLayout>
-                <Button Text="{Binding ButtonText}" Command="{Binding ReInitializeCommand}"  HorizontalOptions="Start"/>
+                <Grid ColumnDefinitions="200,200,70,200">
+                    <Label Grid.Column="1" Text="UiWindowStartIndex"/>
+                    <Label Grid.Column="2" Text="{Binding UiWindowStartIndex, StringFormat='{0,10}'}" HorizontalOptions="End"  BackgroundColor="Bisque" MinimumWidthRequest="50"/>
+                </Grid>
+                <Grid ColumnDefinitions="200,200,70,200">
+                    <Label Grid.Column="1" Text="Index of Top-Visible Item"/>
+                    <Label Grid.Column="2" Text="{Binding ActualTopVisibleItemIndex, StringFormat='{0,10}'}" HorizontalOptions="End" BackgroundColor="Bisque" MinimumWidthRequest="50"/>
+                </Grid>
+                <Grid ColumnDefinitions="200,200,70,200">
+                    <Label Grid.Column="1" Text="Index of Bottom-Visible Item" />
+                    <Label Grid.Column="2" Text="{Binding ActualBottomVisibleItemIndex, StringFormat='{0,10}'}" HorizontalOptions="End" BackgroundColor="Bisque" MinimumWidthRequest="50"/>
+                </Grid>
+                    <Button Text="{Binding ButtonText}" Command="{Binding ReInitializeCommand}"  HorizontalOptions="Start"/>
                 <BoxView Grid.Row="2"  Color="Gray" HeightRequest="20"/>
             </VerticalStackLayout>
 

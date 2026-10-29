@@ -27,5 +27,36 @@ namespace CollectionViewDetective
                 vm.VerticallyScrolledCollection(e);
             }
         }
+
+        protected override void OnBindingContextChanged()
+        {
+            base.OnBindingContextChanged();
+
+            if (BindingContext is DisplayViewModel vm)
+            {
+                vm.RequestScrollToIndex = (targetIndex) =>
+                {
+                    MainThread.BeginInvokeOnMainThread(() =>
+                    {
+                        Debug.WriteLine($"In Code-Behind. ScrollToIndex {targetIndex}");
+                        DisplayCollectionView.ScrollTo(
+                            targetIndex,
+                            position: ScrollToPosition.Start,
+                            animate: false);
+                    });
+                };
+                vm.RequestScrollToItem = (targetItem) => {
+                    MainThread.BeginInvokeOnMainThread(() =>
+                    {
+                        Debug.WriteLine($"In Code-Behind. ScrollToItem {targetItem}");
+                        DisplayCollectionView.ScrollTo(
+                            targetItem,
+                            position: ScrollToPosition.Start,
+                            animate: false);
+                    });
+
+                };
+            }
+        }  
     }
 }
