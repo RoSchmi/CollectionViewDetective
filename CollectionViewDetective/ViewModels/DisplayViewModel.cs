@@ -129,7 +129,7 @@ namespace CollectionViewDetective.ViewModels
             if (newUiIndex < 0) newUiIndex = 0;
 
             
-            /************* HandleUiWindowShiftDown **************************/
+            /*************        HandleUiWindowShiftDown         **************************/
 
             if (HandleUiWindowShiftDown(shiftAmount))
             { 
