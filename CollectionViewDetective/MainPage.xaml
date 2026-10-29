@@ -1,0 +1,59 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:viewmodels="clr-namespace:CollectionViewDetective.ViewModels"
+             xmlns:models="clr-namespace:CollectionViewDetective.Models" 
+             x:Class="CollectionViewDetective.MainPage">
+
+    
+
+    
+
+    <ContentPage.Content>
+
+        <Grid x:Name="DisplayGrid" Padding="10,1" RowDefinitions="Auto, *, Auto">
+            <VerticalStackLayout Grid.Row="0">
+                <HorizontalStackLayout Spacing="20">
+                    <Label Text="Index of TopVisibleItem" Margin="200,0,10,0"/>
+                    <Label Text="{Binding ActualTopVisibleItemIndex, StringFormat='{0,10}'}" BackgroundColor="Bisque" MinimumWidthRequest="50"/>
+                    <Label Text="Index of BottomVisibleItem" Margin="0,0,10,0"/>
+                    <Label Text="{Binding ActualBottomVisibleItemIndex, StringFormat='{0,10}'}"   BackgroundColor="Bisque" MinimumWidthRequest="50"/>
+                </HorizontalStackLayout>
+                <Button Text="{Binding ButtonText}" Command="{Binding ReInitializeCommand}"  HorizontalOptions="Start"/>
+                <BoxView Grid.Row="2"  Color="Gray" HeightRequest="20"/>
+            </VerticalStackLayout>
+
+            <CollectionView Grid.Row="1" x:Name="DisplayCollectionView"                    
+                ItemsSource="{Binding DisplayItemCollection}"  
+                RemainingItemsThreshold="20" 
+                RemainingItemsThresholdReachedCommand="{Binding GetNextDataCommand}"
+                ItemsUpdatingScrollMode="KeepScrollOffset"
+                Scrolled="OnVerticallyScrolledCollection" 
+                SelectionMode="None"                                
+                HorizontalOptions="Start"
+                WidthRequest="{Binding DisplayCollectionWidth}"          
+                HorizontalScrollBarVisibility="Always">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="models:EntityDisplayItem">
+                        <Grid MinimumHeightRequest="25" HorizontalOptions="Start"                                  
+                              BackgroundColor="Transparent"
+                              Padding="0,5">
+                            <Label Margin="0,10,0,0"
+                                    Text="{Binding EntityRow}" 
+                                           LineBreakMode="NoWrap" 
+                                           FontSize="Micro" 
+                                           FontAttributes="Bold" 
+                                           HorizontalOptions="Start" 
+                                           HorizontalTextAlignment="Start" 
+                                           Padding="10,1"
+                                           WidthRequest= "1000">
+                                <!-- WidthRequest="{Binding DisplayCollectionWidth}"> -->
+                            </Label>
+                        </Grid>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+            <BoxView Grid.Row="2"  Color="Gray" HeightRequest="20"/>
+        </Grid>
+    </ContentPage.Content>
+</ContentPage>
