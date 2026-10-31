@@ -16,9 +16,13 @@ namespace CollectionViewDetective.ViewModels
 
         public Action<EntityDisplayItem>? RequestScrollToItem { get; set; }
 
+        private const int UiCollectionSizeInRows = 100;      // Größe der DisplayItemCollection
+
+        public int UiScrollThreshold { get; } = 20;    // Schwelle für Fenster-Verschiebung
+
         private static readonly Stopwatch SW = Stopwatch.StartNew();
 
-        private const int UiCollectionSizeInRows = 100;      // Größe der DisplayItemCollection
+        
        // public int UiWindowStartIndex { get; private set; } = 0;
         public int UiWindowEndIndex => UiWindowStartIndex + UiCollectionSizeInRows - 1;
 
@@ -30,13 +34,17 @@ namespace CollectionViewDetective.ViewModels
 
         [ObservableProperty]
         private int actualBottomVisibleItemIndex;
-        
+
+        //public int DisplayCollectionWidth { get; set; } = 1000;
+
+        [ObservableProperty]
+        private double displayCollectionWidth = 1000;
+
         List<EntityDisplayItem> _AllItemsList = new List<EntityDisplayItem>();
 
         public ObservableCollection<EntityDisplayItem> DisplayItemCollection { get; set; } = new ObservableCollection<EntityDisplayItem>();
             
-      //  public List<EntityDisplayItem> DisplayItemList { get; set; } = new List<EntityDisplayItem>();
-
+      
         [ObservableProperty]
         private string buttonText = "Re-Initialize Tables";
 
@@ -46,7 +54,7 @@ namespace CollectionViewDetective.ViewModels
 
         private bool _isShiftingDown = false;
 
-        public int UiScrollThreshold { get; } = 20;    // Schwelle für Fenster-Verschiebung
+        
 
         #region Region Constructor
         public DisplayViewModel()
@@ -119,7 +127,6 @@ namespace CollectionViewDetective.ViewModels
         }
         #endregion
 
-        
         #region Region Task PerformShiftDownAsync()
         private async Task PerformShiftDownAsync()
         {
@@ -146,7 +153,6 @@ namespace CollectionViewDetective.ViewModels
         }
         #endregion
 
-
         #region Region  Function bool HandleUiWindowShiftDown
         private bool HandleUiWindowShiftDown(int amount)
         {
@@ -163,11 +169,10 @@ namespace CollectionViewDetective.ViewModels
                 SW.Restart();
                 string SWStartTime = ($"{SW.ElapsedMilliseconds,8} ms\" ShiftDown gestartet");
 
-                // Copy content of Observable Collection to list (manipulating of list doesn't affekt Ui)
-
+                // Copy item content of Observable Collection to list 
                 DisplayItemList = DisplayItemCollection.ToList<EntityDisplayItem>();
 
-                /*
+                /* Alternative copy items of ObservableCollection to list
                 DisplayItemList.Clear();
                 for (int i = 0; i < UiCollectionSizeInRows; i++)
                 {
@@ -175,97 +180,49 @@ namespace CollectionViewDetective.ViewModels
                 }
                 */
 
-                // DisplayItemCollection.SuspendNotifications();
-
+                
                 int maxShiftCount = Math.Max(0, DisplayItemCollection.Count - amount);
 
                 var firstVisibleItem = DisplayItemCollection[ActualTopVisibleItemIndex];
                 var targetVisibleItem = DisplayItemCollection[ActualTopVisibleItemIndex - amount];
 
-                // Shift items down in List
+                // Shift content of items down in List
 
                 for (int i = 0; i < maxShiftCount; i++)
                 {
                     DisplayItemList[i].EntityRow = DisplayItemList[i + amount].EntityRow;
                 }
 
-
                 string SWInnerShiftTime = ($"{SW.ElapsedMilliseconds,8} ms\" Items verschoben");
-
-
-
-
 
                 // fill upper places in List with items from AllItemsList
                 for (int i = maxShiftCount; i < DisplayItemCollection.Count; i++)       
-                    {
-                        int globalIndex = UiWindowStartIndex + i;
-                      //  var entity = _entityCache.GetEntityAt(globalIndex);
-
-                        
-
-                        DisplayItemList[i].EntityRow = new EntityDisplayItem(_AllItemsList[globalIndex].EntityRow).EntityRow;
+                {
+                    int globalIndex = UiWindowStartIndex + i;
+                      
+                    DisplayItemList[i].EntityRow = new EntityDisplayItem(_AllItemsList[globalIndex].EntityRow).EntityRow;
 
                     Debug.WriteLine($"Counter i = {i}  UIWindwowStartIndex: {UiWindowStartIndex} globalIndex = {globalIndex} Length of _AllItemsList: {_AllItemsList.Count}");
-
-                       // DisplayItemList[i] = ;
-                    }
+                   
+                }
                     
 
-
-                    // DisplayItemCollection.ResumeNotifications(sendReset: true);
-
-                    // DisplayItemCollection.SuspendNotifications();
-
-
-                    // DisplayItemCollection.SuspendNotifications();
-
-
-                    // DisplayItemCollection[50] = DisplayItemList[50];
-
-
-                    // RoSchmi changed for tests
-
-
-
-
-                    for (int i = 0; i < DisplayItemList.Count; i++)
+                for (int i = 0; i < DisplayItemList.Count; i++)
                 {
                     //  DisplayItemCollection[i].EntityRow = DisplayItemList[i].EntityRow;
 
-                    DisplayItemCollection[i] = DisplayItemList[i];
-
-                    //  DisplayItemCollection[i].EntityRow = "AA";
-
-                    // Alternative for new Instance of ObservableCollection (not used)
-                    // DisplayItemCollection.Add(DisplayItemList[i]);
+                    DisplayItemCollection[i] = DisplayItemList[i];         
                 }
 
-
-                //RequestScrollToIndex?.Invoke(newUiIndex);
-
-                // Set tar
+                // Set target item
                 DisplayItemCollection[ActualTopVisibleItemIndex - amount] = targetVisibleItem;
 
                 RequestScrollToItem?.Invoke(targetVisibleItem);
 
-
-
-                //DisplayItemCollection.ResumeNotifications(sendReset: true);
-
-
-
-
-                // DisplayItemCollection.ReplaceAll(DisplayItemList);
-
-                //DisplayItemCollection[i].EntityRow = 
-
-
-
                 string SWFillTime = ($"{SW.ElapsedMilliseconds,8} ms\" Items eingesetzt");
 
                 string SWShiftTime = ($"{SW.ElapsedMilliseconds,8} ms\" UiWindow geshiftet");
-                Debug.WriteLine($"Down {SWShiftTime}");
+                Debug.WriteLine($"Shifted Down {SWShiftTime}");
 
                 UiWindowStartIndex = Math.Max(0, UiWindowStartIndex);
 
@@ -329,7 +286,7 @@ namespace CollectionViewDetective.ViewModels
 
         public void VerticallyScrolledCollection(ItemsViewScrolledEventArgs e)
         {
-            Debug.WriteLine($"{UiWindowStartIndex}");
+            Debug.WriteLine($"UiWindowStartIndex = {UiWindowStartIndex}");
         }
     }
 }

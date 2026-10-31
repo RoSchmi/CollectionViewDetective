@@ -28,6 +28,18 @@ namespace CollectionViewDetective
             }
         }
 
+        private void OnHorizontallyScrolledTable(object sender, ScrolledEventArgs e)
+        {
+            /*
+            if (_syncing)
+                return;
+            
+            _syncing = true;
+            ScrollHeader.ScrollToAsync(e.ScrollX, 0, false);
+            _syncing = false;
+            */
+        }
+
         protected override void OnBindingContextChanged()
         {
             base.OnBindingContextChanged();

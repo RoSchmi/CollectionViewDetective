@@ -5,31 +5,27 @@
              xmlns:models="clr-namespace:CollectionViewDetective.Models" 
              x:Class="CollectionViewDetective.MainPage">
 
-    
-
-    
-
     <ContentPage.Content>
-
         <Grid x:Name="DisplayGrid" Padding="10,1" RowDefinitions="Auto, *, Auto">
             <VerticalStackLayout Grid.Row="0">
-                <Grid ColumnDefinitions="200,200,70,200">
+                <Grid ColumnDefinitions="40,200,70,200">
                     <Label Grid.Column="1" Text="UiWindowStartIndex"/>
                     <Label Grid.Column="2" Text="{Binding UiWindowStartIndex, StringFormat='{0,10}'}" HorizontalOptions="End"  BackgroundColor="Bisque" MinimumWidthRequest="50"/>
                 </Grid>
-                <Grid ColumnDefinitions="200,200,70,200">
+                <Grid ColumnDefinitions="40,200,70,200">
                     <Label Grid.Column="1" Text="Index of Top-Visible Item"/>
                     <Label Grid.Column="2" Text="{Binding ActualTopVisibleItemIndex, StringFormat='{0,10}'}" HorizontalOptions="End" BackgroundColor="Bisque" MinimumWidthRequest="50"/>
                 </Grid>
-                <Grid ColumnDefinitions="200,200,70,200">
+                <Grid ColumnDefinitions="40,200,70,200">
                     <Label Grid.Column="1" Text="Index of Bottom-Visible Item" />
                     <Label Grid.Column="2" Text="{Binding ActualBottomVisibleItemIndex, StringFormat='{0,10}'}" HorizontalOptions="End" BackgroundColor="Bisque" MinimumWidthRequest="50"/>
                 </Grid>
                     <Button Text="{Binding ButtonText}" Command="{Binding ReInitializeCommand}"  HorizontalOptions="Start"/>
-                <BoxView Grid.Row="2"  Color="Gray" HeightRequest="20"/>
+                <BoxView Grid.Row="2"  Color="Gray" HeightRequest="20" Margin="0,5,0,0"/>
             </VerticalStackLayout>
-
-            <CollectionView Grid.Row="1" x:Name="DisplayCollectionView"                    
+            <!-- TABELLE (VERTIKAL SCROLLBAR) Wichtig: HorizontalOptions="Start" -->
+            <ScrollView x:Name="ScrollTable" Grid.Row="1" Orientation="Horizontal" HorizontalOptions="Start" Scrolled="OnHorizontallyScrolledTable">
+                <CollectionView Grid.Row="1" x:Name="DisplayCollectionView"                    
                 ItemsSource="{Binding DisplayItemCollection}"  
                 RemainingItemsThreshold="20" 
                 RemainingItemsThresholdReachedCommand="{Binding GetNextDataCommand}"
@@ -52,13 +48,15 @@
                                            HorizontalOptions="Start" 
                                            HorizontalTextAlignment="Start" 
                                            Padding="10,1"
-                                           WidthRequest= "1000">
+                                           WidthRequest="{Binding DisplayCollectionWidth}">
+                                  <!--         WidthRequest= "1000"> -->
                                 <!-- WidthRequest="{Binding DisplayCollectionWidth}"> -->
                             </Label>
                         </Grid>
                     </DataTemplate>
                 </CollectionView.ItemTemplate>
             </CollectionView>
+            </ScrollView>
             <BoxView Grid.Row="2"  Color="Gray" HeightRequest="20"/>
         </Grid>
     </ContentPage.Content>
