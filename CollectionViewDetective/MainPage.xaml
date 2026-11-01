@@ -18,19 +18,19 @@
                 </Grid>
                 <Grid ColumnDefinitions="40,200,70,200">
                     <Label Grid.Column="1" Text="Last Shift Time (sec.msec)" FontAttributes="Bold"/>
-                    <Label Grid.Column="2" Text="{Binding NeededTimeAsString, StringFormat='{0,10}'}" HorizontalOptions="End" BackgroundColor="Bisque" MinimumWidthRequest="50"/>
+                    <Label Grid.Column="2" Text="{Binding NeededTimeAsString, StringFormat='{0,10}'}" HorizontalOptions="End" BackgroundColor="Bisque" TextColor="Gray" MinimumWidthRequest="50"/>
                 </Grid>
                 <Grid ColumnDefinitions="40,200,70,200">
                     <Label Grid.Column="1" Text="UiWindowStartIndex"/>
-                    <Label Grid.Column="2" Text="{Binding UiWindowStartIndex, StringFormat='{0,10}'}" HorizontalOptions="End" BackgroundColor="Bisque" MinimumWidthRequest="50"/>
+                    <Label Grid.Column="2" Text="{Binding UiWindowStartIndex, StringFormat='{0,10}'}" HorizontalOptions="End" BackgroundColor="Bisque" TextColor="Gray" MinimumWidthRequest="50"/>
                 </Grid>
                 <Grid ColumnDefinitions="40,200,70,200">
                     <Label Grid.Column="1" Text="Index of Top-Visible Item"/>
-                    <Label Grid.Column="2" Text="{Binding ActualTopVisibleItemIndex, StringFormat='{0,10}'}" HorizontalOptions="End" BackgroundColor="Bisque" MinimumWidthRequest="50"/>
+                    <Label Grid.Column="2" Text="{Binding ActualTopVisibleItemIndex, StringFormat='{0,10}'}" HorizontalOptions="End" BackgroundColor="Bisque" TextColor="Gray" MinimumWidthRequest="50"/>
                 </Grid>
                 <Grid ColumnDefinitions="40,200,70,200">
                     <Label Grid.Column="1" Text="Index of Bottom-Visible Item" />
-                    <Label Grid.Column="2" Text="{Binding ActualBottomVisibleItemIndex, StringFormat='{0,10}'}" HorizontalOptions="End" BackgroundColor="Bisque" MinimumWidthRequest="50"/>
+                    <Label Grid.Column="2" Text="{Binding ActualBottomVisibleItemIndex, StringFormat='{0,10}'}" HorizontalOptions="End" BackgroundColor="Bisque" TextColor="Gray" MinimumWidthRequest="50"/>
                 </Grid>
                 <HorizontalStackLayout Spacing="10" Margin="0,5,0,5">
                     <Button Text="Re-Initialize" Command="{Binding ReInitializeCommand}"  HorizontalOptions="Start"/>
@@ -67,18 +67,18 @@
                 ItemsSource="{Binding DisplayItemCollection}"  
                 RemainingItemsThreshold="{Binding UiScrollThreshold}" 
                 RemainingItemsThresholdReachedCommand="{Binding GetNextDataCommand}"
-                ItemsUpdatingScrollMode="KeepScrollOffset"
+                ItemsUpdatingScrollMode="{Binding UpdatingScrollMode}"
                 Scrolled="OnVerticallyScrolledCollection" 
                 SelectionMode="None"                                
                 HorizontalOptions="Start"
                 WidthRequest="{Binding DisplayCollectionWidth}"          
                 HorizontalScrollBarVisibility="Always">
-                <CollectionView.ItemTemplate>
-                    <DataTemplate x:DataType="models:EntityDisplayItem">
-                        <Grid MinimumHeightRequest="25" HorizontalOptions="Start"                                  
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate x:DataType="models:EntityDisplayItem">
+                            <Grid MinimumHeightRequest="25" HorizontalOptions="Start"                                  
                               BackgroundColor="Transparent"
                               Padding="0,5">
-                            <Label Margin="0,10,0,0"
+                                <Label Margin="0,10,0,0"
                                     Text="{Binding EntityRow}" 
                                            LineBreakMode="NoWrap" 
                                            FontSize="Micro" 
@@ -87,13 +87,13 @@
                                            HorizontalTextAlignment="Start" 
                                            Padding="10,1"
                                            WidthRequest="{Binding DisplayCollectionWidth}">
-                                  <!--         WidthRequest= "1000"> -->
-                                <!-- WidthRequest="{Binding DisplayCollectionWidth}"> -->
-                            </Label>
-                        </Grid>
-                    </DataTemplate>
-                </CollectionView.ItemTemplate>
-            </CollectionView>
+                                    <!--         WidthRequest= "1000"> -->
+                                    <!-- WidthRequest="{Binding DisplayCollectionWidth}"> -->
+                                </Label>
+                            </Grid>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
             </ScrollView>
             <BoxView Grid.Row="2"  Color="Gray" HeightRequest="20"/>
         </Grid>

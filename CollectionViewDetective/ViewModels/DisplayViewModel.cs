@@ -53,7 +53,11 @@ namespace CollectionViewDetective.ViewModels
         [ObservableProperty]
         private bool showSettings = false;
 
-        List<EntityDisplayItem> _AllItemsList = new List<EntityDisplayItem>();
+        [ObservableProperty]
+
+        private ItemsUpdatingScrollMode? updatingScrollMode;
+
+        List <EntityDisplayItem> _AllItemsList = new List<EntityDisplayItem>();
 
         public ObservableCollection<EntityDisplayItem> DisplayItemCollection { get; set; } = new ObservableCollection<EntityDisplayItem>();
             
@@ -177,73 +181,43 @@ namespace CollectionViewDetective.ViewModels
         #region Region  Function bool HandleUiWindowShiftDown
         private bool HandleUiWindowShiftDown(int amount)
         {
-            List<EntityDisplayItem> DisplayItemList  = new();
-
-            var lastUiWindowStartIndex_local = UiWindowStartIndex;
+            var originalUiWindowStartIndex = UiWindowStartIndex;
 
             UiWindowStartIndex += amount;
 
-            
-            if (lastUiWindowStartIndex_local != UiWindowStartIndex)
+            if (originalUiWindowStartIndex != UiWindowStartIndex)
             {
 
                 SW.Restart();
                 string SWStartTime = ($"{SW.ElapsedMilliseconds,8} ms\" ShiftDown gestartet");
+  
+                // Set UpdatingScrollMode in .xaml
+                UpdatingScrollMode = ItemsUpdatingScrollMode.KeepScrollOffset;
 
-                // Copy item content of Observable Collection to list 
-                DisplayItemList = DisplayItemCollection.ToList<EntityDisplayItem>();
+                int startPointer = DisplayItemCollection.Count;
 
-                /* Alternative copy items of ObservableCollection to list
-                DisplayItemList.Clear();
-                for (int i = 0; i < UiCollectionSizeInRows; i++)
+                // Add new items to ObservableCollection at bottom
+                for (int i = 0; i < amount; i++)
                 {
-                    DisplayItemList.Add(new EntityDisplayItem(DisplayItemCollection[i].EntityRow));
+                    int globalIndex = startPointer + originalUiWindowStartIndex + i;
+                    DisplayItemCollection.Add(new EntityDisplayItem(_AllItemsList[globalIndex].EntityRow));
                 }
-                */
+           
+                string SWInnerShiftTime = ($"{SW.ElapsedMilliseconds,8} ms\" Items added at bottom");
 
-                
-                int maxShiftCount = Math.Max(0, DisplayItemCollection.Count - amount);
+                Debug.WriteLine($"{SWInnerShiftTime}");
 
-                var firstVisibleItem = DisplayItemCollection[ActualTopVisibleItemIndex];
-                var targetVisibleItem = DisplayItemCollection[ActualTopVisibleItemIndex - amount];
+                Debug.WriteLine($"Starting to remove items from top at {DateTime.Now:HH:mm:ss.fff}");
 
-                // Shift content of items down in List
-
-                for (int i = 0; i < maxShiftCount; i++)
+                // Remove old items from top to keep size of the ObservableCollection
+                while (DisplayItemCollection.Count > UiCollectionSizeInRows)
                 {
-                    DisplayItemList[i].EntityRow = DisplayItemList[i + amount].EntityRow;
+                    DisplayItemCollection.RemoveAt(0);
                 }
+                Debug.WriteLine($"Ending to remove items from top at {DateTime.Now:HH:mm:ss.fff}");
 
-                string SWInnerShiftTime = ($"{SW.ElapsedMilliseconds,8} ms\" Items verschoben");
-
-                // fill upper places in List with items from AllItemsList
-                for (int i = maxShiftCount; i < DisplayItemCollection.Count; i++)       
-                {
-                    int globalIndex = UiWindowStartIndex + i;
-                      
-                    DisplayItemList[i].EntityRow = new EntityDisplayItem(_AllItemsList[globalIndex].EntityRow).EntityRow;
-
-                    Debug.WriteLine($"Counter i = {i}  UIWindwowStartIndex: {UiWindowStartIndex} globalIndex = {globalIndex} Length of _AllItemsList: {_AllItemsList.Count}");
-                   
-                }
-                    
-
-                for (int i = 0; i < DisplayItemList.Count; i++)
-                {
-                    //  DisplayItemCollection[i].EntityRow = DisplayItemList[i].EntityRow;
-
-                    DisplayItemCollection[i] = DisplayItemList[i];         
-                }
-
-                // Set target item
-                DisplayItemCollection[ActualTopVisibleItemIndex - amount] = targetVisibleItem;
-
-                RequestScrollToItem?.Invoke(targetVisibleItem);
-
-                string SWFillTime = ($"{SW.ElapsedMilliseconds,8} ms\" Items eingesetzt");
-
-                string SWShiftTime = ($"{SW.ElapsedMilliseconds,8} ms\" UiWindow geshiftet");
-                Debug.WriteLine($"Shifted Down {SWShiftTime}");
+                string SWShiftTime = ($"{SW.ElapsedMilliseconds,8} ms\" UiWindow shiftet completely");
+                Debug.WriteLine($"{SWShiftTime}");
 
                 UiWindowStartIndex = Math.Max(0, UiWindowStartIndex);
 
