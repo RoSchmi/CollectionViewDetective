@@ -9,8 +9,20 @@
         <Grid x:Name="DisplayGrid" Padding="10,1" RowDefinitions="Auto, *, Auto">
             <VerticalStackLayout Grid.Row="0">
                 <Grid ColumnDefinitions="40,200,70,200">
+                    <Label Grid.Column="1" Text="UiCollectionSizeInRows" FontAttributes="Bold" TextColor="Gray"/>
+                    <Label Grid.Column="2" Text="{Binding UiCollectionSizeInRows, StringFormat='{0,10}'}" HorizontalOptions="End" FontAttributes="Bold" TextColor="Blue" BackgroundColor="Bisque" MinimumWidthRequest="50"/>
+                </Grid>
+                <Grid ColumnDefinitions="40,200,70,200">
+                    <Label Grid.Column="1" Text="UiScrollThreshold" FontAttributes="Bold" TextColor="Gray"/>
+                    <Label Grid.Column="2" Text="{Binding UiScrollThreshold, StringFormat='{0,10}'}" HorizontalOptions="End" FontAttributes="Bold" TextColor="Blue" BackgroundColor="Bisque" MinimumWidthRequest="50"/>
+                </Grid>
+                <Grid ColumnDefinitions="40,200,70,200">
+                    <Label Grid.Column="1" Text="Last Shift Time (sec.msec)" FontAttributes="Bold"/>
+                    <Label Grid.Column="2" Text="{Binding NeededTimeAsString, StringFormat='{0,10}'}" HorizontalOptions="End" BackgroundColor="Bisque" MinimumWidthRequest="50"/>
+                </Grid>
+                <Grid ColumnDefinitions="40,200,70,200">
                     <Label Grid.Column="1" Text="UiWindowStartIndex"/>
-                    <Label Grid.Column="2" Text="{Binding UiWindowStartIndex, StringFormat='{0,10}'}" HorizontalOptions="End"  BackgroundColor="Bisque" MinimumWidthRequest="50"/>
+                    <Label Grid.Column="2" Text="{Binding UiWindowStartIndex, StringFormat='{0,10}'}" HorizontalOptions="End" BackgroundColor="Bisque" MinimumWidthRequest="50"/>
                 </Grid>
                 <Grid ColumnDefinitions="40,200,70,200">
                     <Label Grid.Column="1" Text="Index of Top-Visible Item"/>
@@ -20,14 +32,40 @@
                     <Label Grid.Column="1" Text="Index of Bottom-Visible Item" />
                     <Label Grid.Column="2" Text="{Binding ActualBottomVisibleItemIndex, StringFormat='{0,10}'}" HorizontalOptions="End" BackgroundColor="Bisque" MinimumWidthRequest="50"/>
                 </Grid>
-                    <Button Text="{Binding ButtonText}" Command="{Binding ReInitializeCommand}"  HorizontalOptions="Start"/>
-                <BoxView Grid.Row="2"  Color="Gray" HeightRequest="20" Margin="0,5,0,0"/>
+                <HorizontalStackLayout Spacing="10" Margin="0,5,0,5">
+                    <Button Text="Re-Initialize" Command="{Binding ReInitializeCommand}"  HorizontalOptions="Start"/>
+                    <Button Text="Change Coll-Size/ScrollThreshold" Command="{Binding OpenSettingsCommand}"  HorizontalOptions="Start"/>
+                </HorizontalStackLayout>
+                <BoxView Grid.Row="2"  Color="Gray" HeightRequest="5"/>
+                <Grid>
+                    <Border
+                    IsVisible="{Binding ShowSettings}"
+                    BackgroundColor="White"
+                    Stroke="Black">
+                        <VerticalStackLayout>
+                            <Label Text="Change CollectionSize and ScrollThreshold" HorizontalOptions="Center" FontAttributes="Bold" TextColor="Red"/>
+                            <HorizontalStackLayout Spacing="10">
+                                <Label Text="UiCollectionSizeInRows" VerticalOptions="Center" FontAttributes="Bold"/>
+                                <Entry Text="{Binding UiCollectionSizeInRows}" Background="Bisque" WidthRequest="80"/>
+                            </HorizontalStackLayout>
+                            <HorizontalStackLayout Spacing="10">
+                                <Label Text="UiScrollThreshold" VerticalOptions="Center" FontAttributes="Bold"/>
+                                <Entry Text="{Binding UiScrollThreshold}" Background="Bisque" WidthRequest="80" HeightRequest="20"/>
+                            </HorizontalStackLayout>
+                            <HorizontalStackLayout Spacing="10">
+                                <Button Text="Re-Initialize with entered values" Command="{Binding CloseSettingsCommand}" />
+                                <Button Text="Cancel" Command="{Binding CloseSettingsCancelCommand}" />
+                            </HorizontalStackLayout>
+                        </VerticalStackLayout>
+                    </Border>
+                </Grid>
+                <BoxView Grid.Row="2"  Color="Gray" HeightRequest="5" Margin="0,5,0,0"/>
             </VerticalStackLayout>
             <!-- TABELLE (VERTIKAL SCROLLBAR) Wichtig: HorizontalOptions="Start" -->
             <ScrollView x:Name="ScrollTable" Grid.Row="1" Orientation="Horizontal" HorizontalOptions="Start" Scrolled="OnHorizontallyScrolledTable">
                 <CollectionView Grid.Row="1" x:Name="DisplayCollectionView"                    
                 ItemsSource="{Binding DisplayItemCollection}"  
-                RemainingItemsThreshold="20" 
+                RemainingItemsThreshold="{Binding UiScrollThreshold}" 
                 RemainingItemsThresholdReachedCommand="{Binding GetNextDataCommand}"
                 ItemsUpdatingScrollMode="KeepScrollOffset"
                 Scrolled="OnVerticallyScrolledCollection" 

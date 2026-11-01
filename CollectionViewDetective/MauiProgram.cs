@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
 
+
 namespace CollectionViewDetective
 {
     public static class MauiProgram

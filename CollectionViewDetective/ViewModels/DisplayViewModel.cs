@@ -16,15 +16,25 @@ namespace CollectionViewDetective.ViewModels
 
         public Action<EntityDisplayItem>? RequestScrollToItem { get; set; }
 
-        private const int UiCollectionSizeInRows = 100;      // Größe der DisplayItemCollection
+        [ObservableProperty]
+        private int uiCollectionSizeInRows = 100;            // Größe der DisplayItemCollection
 
-        public int UiScrollThreshold { get; } = 20;    // Schwelle für Fenster-Verschiebung
+        private int _UiCollectionSizeInRowsOriginal = 100;  // Variable to hold the original value 
+
+
+        [ObservableProperty]
+        private int uiScrollThreshold = 20;    // Schwelle für Fenster-Verschiebung
+
+        private int _UiScrollThresholdOriginal = 20;  //Variable to hold the original value
+
+        [ObservableProperty]
+        private string neededTimeAsString;
 
         private static readonly Stopwatch SW = Stopwatch.StartNew();
 
         
        // public int UiWindowStartIndex { get; private set; } = 0;
-        public int UiWindowEndIndex => UiWindowStartIndex + UiCollectionSizeInRows - 1;
+        public int UiWindowEndIndex => UiWindowStartIndex + uiCollectionSizeInRows - 1;
 
         [ObservableProperty]
         private int uiWindowStartIndex;
@@ -40,6 +50,9 @@ namespace CollectionViewDetective.ViewModels
         [ObservableProperty]
         private double displayCollectionWidth = 1000;
 
+        [ObservableProperty]
+        private bool showSettings = false;
+
         List<EntityDisplayItem> _AllItemsList = new List<EntityDisplayItem>();
 
         public ObservableCollection<EntityDisplayItem> DisplayItemCollection { get; set; } = new ObservableCollection<EntityDisplayItem>();
@@ -53,6 +66,8 @@ namespace CollectionViewDetective.ViewModels
         private CancellationTokenSource? _shiftDelayCts;
 
         private bool _isShiftingDown = false;
+
+        private DateTime _startShiftTime = DateTime.Now;
 
         
 
@@ -87,7 +102,9 @@ namespace CollectionViewDetective.ViewModels
                 {
                     try
                     {
-                        Debug.WriteLine($"Starting ShiftTimer at {DateTime.Now:HH:mm:ss.fff}");
+                        _startShiftTime = DateTime.Now;
+                        Debug.WriteLine($"Starting ShiftTimer at {_startShiftTime:HH:mm:ss.fff}");
+                        
                         await PerformShiftDownAsync();
                         
                         _shiftDelayCts?.Cancel();
@@ -146,8 +163,12 @@ namespace CollectionViewDetective.ViewModels
             { 
                 // only needed for debugging
                 var testItem = DisplayItemCollection[1];
-   
-                Debug.WriteLine($"Leaving postponed PerformShiftDownAsync() after shifting at {DateTime.Now:HH:mm:ss.fff}\r\n");
+
+                await Task.Delay(1);
+
+                TimeSpan neededTimeToShift = DateTime.Now - _startShiftTime;
+                NeededTimeAsString = $"{neededTimeToShift.Seconds}.{neededTimeToShift.Milliseconds}";
+                Debug.WriteLine($"Leaving postponed PerformShiftDownAsync() after shifting at {DateTime.Now:HH:mm:ss.fff}, needed Time (sec.ms: {neededTimeAsString}  \r\n");      
                 return;
             }    
         }
@@ -250,17 +271,45 @@ namespace CollectionViewDetective.ViewModels
         #region Region ReInitialize
         [RelayCommand]
         private void ReInitialize()
-        {
+        { 
             Debug.WriteLine($"Re-initialized ObservableCollection");
-            int counter = DisplayItemCollection.Count;
+            //int counter = DisplayItemCollection.Count;
+            int counter = UiCollectionSizeInRows;
+            DisplayItemCollection.Clear();
             for (int i = 0; i < counter; i++)
             {
-                DisplayItemCollection[i] = new EntityDisplayItem(_AllItemsList[i].EntityRow);   
+                DisplayItemCollection.Add(new EntityDisplayItem(_AllItemsList[i].EntityRow));
+                //DisplayItemCollection[i] = new EntityDisplayItem(_AllItemsList[i].EntityRow);   
             }
             UiWindowStartIndex = 0;
             RequestScrollToIndex?.Invoke(0);
 
             int breakpoint300 = 1;
+        }
+        #endregion
+
+        #region Region Change Settings
+        [RelayCommand]
+
+        private void OpenSettings()
+        {
+            _UiCollectionSizeInRowsOriginal = UiCollectionSizeInRows;
+            _UiScrollThresholdOriginal = UiScrollThreshold;
+            ShowSettings = true;
+
+        }
+        [RelayCommand]
+        private void CloseSettings()
+        {
+            ReInitialize();
+            ShowSettings = false;
+        }
+        [RelayCommand]
+        private void CloseSettingsCancel()
+        {
+            UiCollectionSizeInRows = _UiCollectionSizeInRowsOriginal;
+            UiScrollThreshold = _UiScrollThresholdOriginal;
+            ShowSettings = false;
         }
         #endregion
 
