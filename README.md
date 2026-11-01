@@ -1,5 +1,6 @@
 ### CollectionViewDetective
 
-Repository to find bugs and explore behavior concerning Maui CollectionView
+Explore and monitor behavior when scrolling down using Maui ObservableCollection and CollectionView
 
-(Actually not of interest for others)
+Works for Windows, iOS and Android (Android still stuttering but bearable)
+
