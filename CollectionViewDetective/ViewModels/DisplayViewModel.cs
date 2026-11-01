@@ -7,6 +7,7 @@ using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Diagnostics;
 using System.Text;
+using CollectionViewDetective.Extensions;
 
 namespace CollectionViewDetective.ViewModels
 {
@@ -59,9 +60,13 @@ namespace CollectionViewDetective.ViewModels
 
         List <EntityDisplayItem> _AllItemsList = new List<EntityDisplayItem>();
 
-        public ObservableCollection<EntityDisplayItem> DisplayItemCollection { get; set; } = new ObservableCollection<EntityDisplayItem>();
-            
-      
+        //public ObservableCollection<EntityDisplayItem> DisplayItemCollection { get; set; } = new ObservableCollection<EntityDisplayItem>();
+
+
+        [ObservableProperty]
+        private ObservableCollectionExtended<EntityDisplayItem> displayItemCollection = new();
+
+
         [ObservableProperty]
         private string buttonText = "Re-Initialize Tables";
 
@@ -150,8 +155,7 @@ namespace CollectionViewDetective.ViewModels
 
         #region Region Task PerformShiftDownAsync()
         private async Task PerformShiftDownAsync()
-        {
-           
+        {  
             Debug.WriteLine("From postponed PerformShiftDownAsync: UI TRY TO SHIFT DOWN");
 
             int maxItemsToShift = _AllItemsList.Count - UiCollectionSizeInRows - 1;
@@ -202,19 +206,19 @@ namespace CollectionViewDetective.ViewModels
                     int globalIndex = startPointer + originalUiWindowStartIndex + i;
                     DisplayItemCollection.Add(new EntityDisplayItem(_AllItemsList[globalIndex].EntityRow));
                 }
-           
+
                 string SWInnerShiftTime = ($"{SW.ElapsedMilliseconds,8} ms\" Items added at bottom");
 
                 Debug.WriteLine($"{SWInnerShiftTime}");
 
                 Debug.WriteLine($"Starting to remove items from top at {DateTime.Now:HH:mm:ss.fff}");
 
-                // Remove old items from top to keep size of the ObservableCollection
                 while (DisplayItemCollection.Count > UiCollectionSizeInRows)
                 {
                     DisplayItemCollection.RemoveAt(0);
                 }
-                Debug.WriteLine($"Ending to remove items from top at {DateTime.Now:HH:mm:ss.fff}");
+
+                Debug.WriteLine($"Finished to remove items from top at {DateTime.Now:HH:mm:ss.fff}");
 
                 string SWShiftTime = ($"{SW.ElapsedMilliseconds,8} ms\" UiWindow shiftet completely");
                 Debug.WriteLine($"{SWShiftTime}");

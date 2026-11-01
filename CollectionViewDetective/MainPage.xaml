@@ -62,8 +62,10 @@
                 <BoxView Grid.Row="2"  Color="Gray" HeightRequest="5" Margin="0,5,0,0"/>
             </VerticalStackLayout>
             <!-- TABELLE (VERTIKAL SCROLLBAR) Wichtig: HorizontalOptions="Start" -->
+            <!-- perhaps try TranslationX -->
+            
             <ScrollView x:Name="ScrollTable" Grid.Row="1" Orientation="Horizontal" HorizontalOptions="Start" Scrolled="OnHorizontallyScrolledTable">
-                <CollectionView Grid.Row="1" x:Name="DisplayCollectionView"                    
+                <CollectionView Grid.Row="1" x:Name="DisplayCollectionView"                  
                 ItemsSource="{Binding DisplayItemCollection}"  
                 RemainingItemsThreshold="{Binding UiScrollThreshold}" 
                 RemainingItemsThresholdReachedCommand="{Binding GetNextDataCommand}"
@@ -94,7 +96,7 @@
                         </DataTemplate>
                     </CollectionView.ItemTemplate>
                 </CollectionView>
-            </ScrollView>
+              </ScrollView> 
             <BoxView Grid.Row="2"  Color="Gray" HeightRequest="20"/>
         </Grid>
     </ContentPage.Content>
