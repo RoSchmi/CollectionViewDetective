@@ -60,12 +60,10 @@ namespace CollectionViewDetective.ViewModels
 
         List <EntityDisplayItem> _AllItemsList = new List<EntityDisplayItem>();
 
-        //public ObservableCollection<EntityDisplayItem> DisplayItemCollection { get; set; } = new ObservableCollection<EntityDisplayItem>();
+        public ObservableCollection<EntityDisplayItem> DisplayItemCollection { get; set; } = new ObservableCollection<EntityDisplayItem>();
 
-
-        [ObservableProperty]
-        private ObservableCollectionExtended<EntityDisplayItem> displayItemCollection = new();
-
+        //[ObservableProperty]
+        //private ObservableCollectionExtended<EntityDisplayItem> displayItemCollection = new();
 
         [ObservableProperty]
         private string buttonText = "Re-Initialize Tables";
@@ -306,8 +304,7 @@ namespace CollectionViewDetective.ViewModels
         #region Region OnDisplayCollectionChanged (is used, function actually not known)
         private void OnDisplayCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-            Debug.WriteLine($"CollectionChangedEvent");
-            int breakpoint258 = 1;
+            Debug.WriteLine($"CollectionChangedEvent");     
         }
         #endregion
 
