@@ -63,9 +63,9 @@
             </VerticalStackLayout>
             <!-- TABELLE (VERTIKAL SCROLLBAR) Wichtig: HorizontalOptions="Start" -->
             <!-- perhaps try TranslationX -->
-            
+
             <ScrollView x:Name="ScrollTable" Grid.Row="1" Orientation="Horizontal" HorizontalOptions="Start" Scrolled="OnHorizontallyScrolledTable">
-                <CollectionView Grid.Row="1" x:Name="DisplayCollectionView"                  
+                <CollectionView Grid.Row="0" x:Name="DisplayCollectionView"                  
                 ItemsSource="{Binding DisplayItemCollection}"  
                 RemainingItemsThreshold="{Binding UiScrollThreshold}" 
                 RemainingItemsThresholdReachedCommand="{Binding GetNextDataCommand}"
@@ -88,7 +88,7 @@
                                            HorizontalOptions="Start" 
                                            HorizontalTextAlignment="Start" 
                                            Padding="10,1"
-                                           WidthRequest="{Binding DisplayCollectionWidth}">
+                                           WidthRequest="{Binding DisplayCollectionWidth}" >
                                     <!--         WidthRequest= "1000"> -->
                                     <!-- WidthRequest="{Binding DisplayCollectionWidth}"> -->
                                 </Label>
@@ -96,7 +96,7 @@
                         </DataTemplate>
                     </CollectionView.ItemTemplate>
                 </CollectionView>
-              </ScrollView> 
+            </ScrollView> 
             <BoxView Grid.Row="2"  Color="Gray" HeightRequest="20"/>
         </Grid>
     </ContentPage.Content>
