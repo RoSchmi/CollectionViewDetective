@@ -17,6 +17,8 @@ namespace CollectionViewDetective.ViewModels
 
         public Action<EntityDisplayItem>? RequestScrollToItem { get; set; }
 
+        public Action<bool>? RequestSuppressLayout { get; set; }
+
         [ObservableProperty]
         private int uiCollectionSizeInRows = 100;            // Größe der DisplayItemCollection
 
@@ -170,7 +172,12 @@ namespace CollectionViewDetective.ViewModels
                 // only needed for debugging
                 var testItem = DisplayItemCollection[1];
 
+                Debug.WriteLine($"Before Delay {DateTime.Now:HH:mm:ss.fff}");
                 await Task.Delay(1);
+
+                DateTime afterTime = DateTime.Now;
+                Debug.WriteLine($"After Delay {afterTime:HH:mm:ss.fff}");
+
 
                 TimeSpan neededTimeToShift = DateTime.Now - _startShiftTime;
                 NeededTimeAsString = $"{neededTimeToShift.Seconds}.{neededTimeToShift.Milliseconds}";
@@ -198,22 +205,31 @@ namespace CollectionViewDetective.ViewModels
 
                 int startPointer = DisplayItemCollection.Count;
 
-                // Add new items to ObservableCollection at bottom
-                for (int i = 0; i < amount; i++)
+                RequestSuppressLayout?.Invoke(true);
+
+                try
                 {
-                    int globalIndex = startPointer + originalUiWindowStartIndex + i;
-                    DisplayItemCollection.Add(new EntityDisplayItem(_AllItemsList[globalIndex].EntityRow));
+                    // Add new items to ObservableCollection at bottom
+                    for (int i = 0; i < amount; i++)
+                    {
+                        int globalIndex = startPointer + originalUiWindowStartIndex + i;
+                        DisplayItemCollection.Add(new EntityDisplayItem(_AllItemsList[globalIndex].EntityRow));
+                    }
+
+                    string SWInnerShiftTime = ($"{SW.ElapsedMilliseconds,8} ms\" Items added at bottom");
+
+                    Debug.WriteLine($"{SWInnerShiftTime}");
+
+                    Debug.WriteLine($"Starting to remove items from top at {DateTime.Now:HH:mm:ss.fff}");
+
+                    while (DisplayItemCollection.Count > UiCollectionSizeInRows)
+                    {
+                        DisplayItemCollection.RemoveAt(0);
+                    }
                 }
-
-                string SWInnerShiftTime = ($"{SW.ElapsedMilliseconds,8} ms\" Items added at bottom");
-
-                Debug.WriteLine($"{SWInnerShiftTime}");
-
-                Debug.WriteLine($"Starting to remove items from top at {DateTime.Now:HH:mm:ss.fff}");
-
-                while (DisplayItemCollection.Count > UiCollectionSizeInRows)
+                finally
                 {
-                    DisplayItemCollection.RemoveAt(0);
+                    RequestSuppressLayout?.Invoke(false);
                 }
 
                 Debug.WriteLine($"Finished to remove items from top at {DateTime.Now:HH:mm:ss.fff}");
