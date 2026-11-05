@@ -2,9 +2,17 @@
 
 Explore and monitor behavior when scrolling down using Maui ObservableCollection and CollectionView nested in a ScrollView.
 
-When ScrollView is removed in .xaml, scrolling works quite smoothly in Android as well.
+Works for Windows, iOS and Android
 
-Works for Windows, iOS and Android (Android still stuttering but bearable)
+This Repo was made because there were difficulties to achieve smoothly scrolling on Android.
+
+In the master branch you see the version, when the problem was solved by setting: 
+
+_recyclerView.HasFixedSize = true;
+
+In the branch original you see the original version with stuttering scrolling on Android
+
+
 
 
 
