@@ -8,7 +8,7 @@ This Repo was made because there were difficulties to achieve smoothly scrolling
 
 In the master branch you see the version, when the problem was solved by setting: 
 
-_recyclerView.HasFixedSize = true;
+#### _recyclerView.HasFixedSize = true;
 
 This solution works especially in conditions where the size of the bound ObservableCollection is held constant.
 
