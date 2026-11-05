@@ -12,11 +12,7 @@ namespace CollectionViewDetective
         int count = 0;
 
 #if ANDROID
-        private RecyclerView? _recyclerView;
-      
-
-
-      
+        private RecyclerView? _recyclerView;      
 #endif
 
         public MainPage(DisplayViewModel viewModel)

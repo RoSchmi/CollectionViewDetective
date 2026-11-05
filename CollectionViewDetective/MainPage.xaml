@@ -17,7 +17,7 @@
                     <Label Grid.Column="2" Text="{Binding UiScrollThreshold, StringFormat='{0,10}'}" HorizontalOptions="End" FontAttributes="Bold" TextColor="Blue" BackgroundColor="Bisque" MinimumWidthRequest="50"/>
                 </Grid>
                 <Grid ColumnDefinitions="40,200,70,200">
-                    <Label Grid.Column="1" Text="Last Shift Time (sec.msec)" FontAttributes="Bold"/>
+                    <Label Grid.Column="1" Text="Last Shift Duration (sec.msec)" FontAttributes="Bold"/>
                     <Label Grid.Column="2" Text="{Binding NeededTimeAsString, StringFormat='{0,10}'}" HorizontalOptions="End" BackgroundColor="Bisque" TextColor="Gray" MinimumWidthRequest="50"/>
                 </Grid>
                 <Grid ColumnDefinitions="40,200,70,200">

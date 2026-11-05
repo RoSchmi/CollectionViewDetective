@@ -180,8 +180,8 @@ namespace CollectionViewDetective.ViewModels
 
 
                 TimeSpan neededTimeToShift = DateTime.Now - _startShiftTime;
-                NeededTimeAsString = $"{neededTimeToShift.Seconds}.{neededTimeToShift.Milliseconds}";
-                Debug.WriteLine($"Leaving postponed PerformShiftDownAsync() after shifting at {DateTime.Now:HH:mm:ss.fff}, needed Time (sec.ms: {neededTimeAsString}  \r\n");      
+                NeededTimeAsString = $"{neededTimeToShift.Seconds}.{neededTimeToShift:fff}";
+                Debug.WriteLine($"Leaving postponed PerformShiftDownAsync() after shifting at {DateTime.Now:HH:mm:ss.fff}, needed Time (sec.ms: {NeededTimeAsString}  \r\n");      
                 return;
             }    
         }
