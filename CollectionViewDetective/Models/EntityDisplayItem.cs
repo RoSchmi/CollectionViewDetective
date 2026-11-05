@@ -10,8 +10,7 @@ namespace CollectionViewDetective.Models
         [ObservableProperty]
 
         private string entityRow;
-
-        //public partial string EntityRow { get; set; } = string.Empty;
+  
         public EntityDisplayItem(string rowContent)
         {
             EntityRow = rowContent;

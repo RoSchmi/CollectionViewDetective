@@ -35,8 +35,6 @@ namespace CollectionViewDetective.ViewModels
 
         private static readonly Stopwatch SW = Stopwatch.StartNew();
 
-        
-       // public int UiWindowStartIndex { get; private set; } = 0;
         public int UiWindowEndIndex => UiWindowStartIndex + uiCollectionSizeInRows - 1;
 
         [ObservableProperty]
@@ -65,9 +63,6 @@ namespace CollectionViewDetective.ViewModels
         //[ObservableProperty]
         //private ObservableCollectionExtended<EntityDisplayItem> displayItemCollection = new();
 
-        [ObservableProperty]
-        private string buttonText = "Re-Initialize Tables";
-
         public IDispatcher UiDispatcher { get; set; }
 
         private CancellationTokenSource? _shiftDelayCts;
@@ -77,7 +72,6 @@ namespace CollectionViewDetective.ViewModels
         private DateTime _startShiftTime = DateTime.Now;
 
         
-
         #region Region Constructor
         public DisplayViewModel()
         {
@@ -110,7 +104,7 @@ namespace CollectionViewDetective.ViewModels
                     try
                     {
                         _startShiftTime = DateTime.Now;
-                        Debug.WriteLine($"Starting ShiftTimer at {_startShiftTime:HH:mm:ss.fff}");
+                        Debug.WriteLine($"Starting ShiftBlockTimer at {_startShiftTime:HH:mm:ss.fff}");
                         
                         await PerformShiftDownAsync();
                         
@@ -128,7 +122,7 @@ namespace CollectionViewDetective.ViewModels
 
                                 _isShiftingDown = false;
 
-                                Debug.WriteLine($"ShiftTimer elapsed at {DateTime.Now:HH:mm:ss.fff}");
+                                Debug.WriteLine($"ShiftBlockTimer elapsed at {DateTime.Now:HH:mm:ss.fff}");
                             }
                             catch (OperationCanceledException ex)
                             {}
@@ -166,16 +160,11 @@ namespace CollectionViewDetective.ViewModels
             /*************        HandleUiWindowShiftDown         **************************/
 
             if (HandleUiWindowShiftDown(shiftAmount))
-            { 
-                // only needed for debugging
+            {
+                // only needed for debugging to inspect content of DisplayItemCollection
                 var testItem = DisplayItemCollection[1];
-
-                Debug.WriteLine($"Before Delay {DateTime.Now:HH:mm:ss.fff}");
+ 
                 await Task.Delay(1);
-
-                DateTime afterTime = DateTime.Now;
-                Debug.WriteLine($"After Delay {afterTime:HH:mm:ss.fff}");
-
 
                 TimeSpan neededTimeToShift = DateTime.Now - _startShiftTime;
                 NeededTimeAsString = $"{neededTimeToShift.Seconds}.{neededTimeToShift:fff}";
@@ -198,41 +187,32 @@ namespace CollectionViewDetective.ViewModels
                 SW.Restart();
                 string SWStartTime = ($"{SW.ElapsedMilliseconds,8} ms\" ShiftDown gestartet");
   
-                // Set UpdatingScrollMode in .xaml
+                // Set UpdatingScrollMode
                 UpdatingScrollMode = ItemsUpdatingScrollMode.KeepScrollOffset;
 
                 int startPointer = DisplayItemCollection.Count;
 
-                RequestSuppressLayout?.Invoke(true);
-
-                try
+                // Add new items to ObservableCollection at bottom
+                for (int i = 0; i < amount; i++)
                 {
-                    // Add new items to ObservableCollection at bottom
-                    for (int i = 0; i < amount; i++)
-                    {
-                        int globalIndex = startPointer + originalUiWindowStartIndex + i;
-                        DisplayItemCollection.Add(new EntityDisplayItem(_AllItemsList[globalIndex].EntityRow));
-                    }
-
-                    string SWInnerShiftTime = ($"{SW.ElapsedMilliseconds,8} ms\" Items added at bottom");
-
-                    Debug.WriteLine($"{SWInnerShiftTime}");
-
-                    Debug.WriteLine($"Starting to remove items from top at {DateTime.Now:HH:mm:ss.fff}");
-
-                    while (DisplayItemCollection.Count > UiCollectionSizeInRows)
-                    {
-                        DisplayItemCollection.RemoveAt(0);
-                    }
-                }
-                finally
-                {
-                    RequestSuppressLayout?.Invoke(false);
+                    int globalIndex = startPointer + originalUiWindowStartIndex + i;
+                    DisplayItemCollection.Add(new EntityDisplayItem(_AllItemsList[globalIndex].EntityRow));
                 }
 
+                string SWInnerShiftTime = ($"Needed {SW.ElapsedMilliseconds,8} ms to add {amount} Items at bottom");
+
+                Debug.WriteLine($"{SWInnerShiftTime}");
+
+                Debug.WriteLine($"Starting to remove {amount} items from top at {DateTime.Now:HH:mm:ss.fff}");
+
+                while (DisplayItemCollection.Count > UiCollectionSizeInRows)
+                {
+                    DisplayItemCollection.RemoveAt(0);
+                }
+               
                 Debug.WriteLine($"Finished to remove items from top at {DateTime.Now:HH:mm:ss.fff}");
 
-                string SWShiftTime = ($"{SW.ElapsedMilliseconds,8} ms\" UiWindow shiftet completely");
+                string SWShiftTime = ($"After {SW.ElapsedMilliseconds,8} ms UiWindow shiftet completely");
                 Debug.WriteLine($"{SWShiftTime}");
 
                 UiWindowStartIndex = Math.Max(0, UiWindowStartIndex);
@@ -262,19 +242,15 @@ namespace CollectionViewDetective.ViewModels
         [RelayCommand]
         private void ReInitialize()
         { 
-            Debug.WriteLine($"Re-initialized ObservableCollection");
-            //int counter = DisplayItemCollection.Count;
+            Debug.WriteLine($"Re-initialized ObservableCollection");         
             int counter = UiCollectionSizeInRows;
             DisplayItemCollection.Clear();
             for (int i = 0; i < counter; i++)
             {
-                DisplayItemCollection.Add(new EntityDisplayItem(_AllItemsList[i].EntityRow));
-                //DisplayItemCollection[i] = new EntityDisplayItem(_AllItemsList[i].EntityRow);   
+                DisplayItemCollection.Add(new EntityDisplayItem(_AllItemsList[i].EntityRow));              
             }
             UiWindowStartIndex = 0;
-            RequestScrollToIndex?.Invoke(0);
-
-            int breakpoint300 = 1;
+            RequestScrollToIndex?.Invoke(0);         
         }
         #endregion
 
@@ -310,8 +286,7 @@ namespace CollectionViewDetective.ViewModels
             for (int i = 0; i < count; i++)
             {
                 DisplayItemCollection.Add(new EntityDisplayItem(_AllItemsList[i].EntityRow));
-            }
-            int breakpoint310 = 1;
+            }   
         }
         #endregion
 
