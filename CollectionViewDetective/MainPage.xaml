@@ -62,9 +62,8 @@
                 <BoxView Grid.Row="2"  Color="Gray" HeightRequest="5" Margin="0,5,0,0"/>
             </VerticalStackLayout>
             <!-- TABELLE (VERTIKAL SCROLLBAR) Wichtig: HorizontalOptions="Start" -->
-            <!-- perhaps try TranslationX -->
-
-                <ScrollView x:Name="ScrollTable" Grid.Row="1" Orientation="Horizontal" HorizontalOptions="Start" Scrolled="OnHorizontallyScrolledTable">
+           
+            <ScrollView x:Name="ScrollTable" Grid.Row="1" Orientation="Horizontal" HorizontalOptions="Start" Scrolled="OnHorizontallyScrolledTable">
                 <CollectionView Grid.Row="1" x:Name="DisplayCollectionView"                  
                 ItemsSource="{Binding DisplayItemCollection}"  
                 RemainingItemsThreshold="{Binding UiScrollThreshold}" 
@@ -73,10 +72,8 @@
                 Scrolled="OnVerticallyScrolledCollection" 
                 SelectionMode="None"                                
                 HorizontalOptions="Start"
-                         
+                WidthRequest="{Binding DisplayCollectionWidth}"    
                 HorizontalScrollBarVisibility="Always">
-                <!--    WidthRequest="{Binding DisplayCollectionWidth}" -->
-                    
                     <CollectionView.ItemTemplate>
                         <DataTemplate x:DataType="models:EntityDisplayItem">
                             <Grid MinimumHeightRequest="25" HorizontalOptions="Start"                                  
@@ -88,11 +85,9 @@
                                            FontSize="Micro" 
                                            FontAttributes="Bold" 
                                            HorizontalOptions="Start" 
-                                           HorizontalTextAlignment="Start" 
+                                           HorizontalTextAlignment="Start"
+                                           WidthRequest="{Binding DisplayCollectionWidth}"
                                            Padding="10,1">
-                                 <!--   WidthRequest="{Binding DisplayCollectionWidth}" >  -->
-                                    <!--         WidthRequest= "1000"> -->
-                                    <!-- WidthRequest="{Binding DisplayCollectionWidth}"> -->
                                 </Label>
                             </Grid>
                         </DataTemplate>

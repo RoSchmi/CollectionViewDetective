@@ -48,8 +48,6 @@ namespace CollectionViewDetective.ViewModels
         [ObservableProperty]
         private int actualBottomVisibleItemIndex;
 
-        //public int DisplayCollectionWidth { get; set; } = 1000;
-
         [ObservableProperty]
         private double displayCollectionWidth = 1000;
 
