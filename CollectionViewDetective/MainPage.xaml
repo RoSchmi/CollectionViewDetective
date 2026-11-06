@@ -63,36 +63,27 @@
             </VerticalStackLayout>
             <!-- TABELLE (VERTIKAL SCROLLBAR) Wichtig: HorizontalOptions="Start" -->
            
-            <ScrollView x:Name="ScrollTable" Grid.Row="1" Orientation="Horizontal" HorizontalOptions="Start" Scrolled="OnHorizontallyScrolledTable">
-                <CollectionView Grid.Row="1" x:Name="DisplayCollectionView"                  
-                ItemsSource="{Binding DisplayItemCollection}"  
-                RemainingItemsThreshold="{Binding UiScrollThreshold}" 
-                RemainingItemsThresholdReachedCommand="{Binding GetNextDataCommand}"
-                ItemsUpdatingScrollMode="{Binding UpdatingScrollMode}"
-                Scrolled="OnVerticallyScrolledCollection" 
-                SelectionMode="None"                                
-                HorizontalOptions="Start"
-                WidthRequest="{Binding DisplayCollectionWidth}"    
-                HorizontalScrollBarVisibility="Always">
-                    <CollectionView.ItemTemplate>
+            <ScrollView x:Name="ScrollTable" Grid.Row="1" Orientation="Both" HorizontalOptions="Start" Scrolled="OnScrolled">
+                <StackLayout Orientation="Vertical" BindableLayout.ItemsSource="{Binding DisplayItemCollection}">
+                    <BindableLayout.ItemTemplate>
                         <DataTemplate x:DataType="models:EntityDisplayItem">
                             <Grid MinimumHeightRequest="25" HorizontalOptions="Start"                                  
-                              BackgroundColor="Transparent"
-                              Padding="0,5">
+                            BackgroundColor="Transparent"
+                            Padding="0,5">
                                 <Label Margin="0,10,0,0"
-                                    Text="{Binding EntityRow}" 
-                                           LineBreakMode="NoWrap" 
-                                           FontSize="Micro" 
-                                           FontAttributes="Bold" 
-                                           HorizontalOptions="Start" 
-                                           HorizontalTextAlignment="Start"
-                                           WidthRequest="{Binding DisplayCollectionWidth}"
-                                           Padding="10,1">
+                            Text="{Binding EntityRow}" 
+                            LineBreakMode="NoWrap" 
+                            FontSize="Micro" 
+                            FontAttributes="Bold" 
+                            HorizontalOptions="Start" 
+                            HorizontalTextAlignment="Start"
+                            WidthRequest="{Binding DisplayCollectionWidth}"
+                            Padding="10,1">
                                 </Label>
                             </Grid>
                         </DataTemplate>
-                    </CollectionView.ItemTemplate>
-                </CollectionView>
+                    </BindableLayout.ItemTemplate>
+                </StackLayout>
            </ScrollView> 
             <BoxView Grid.Row="2"  Color="Gray" HeightRequest="20"/>
         </Grid>

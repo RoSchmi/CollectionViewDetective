@@ -20,7 +20,7 @@ namespace CollectionViewDetective
         public MainPage(DisplayViewModel viewModel)
         {
             InitializeComponent();
-            Loaded += DisplayPage_Loaded;
+          //  Loaded += DisplayPage_Loaded;
             vm = viewModel;
             BindingContext = vm;
             vm.UiDispatcher = this.Dispatcher;
@@ -31,7 +31,7 @@ namespace CollectionViewDetective
             Debug.WriteLine($"\r\nRecyclerView_LayoutChanged at {DateTime.Now:HHH:mm:ss.fff}\r\n");
         }
     #endif
-
+/*
     private async void DisplayPage_Loaded(object? sender, EventArgs e)
     {
 #if ANDROID
@@ -67,6 +67,7 @@ namespace CollectionViewDetective
         
 #endif
         }
+        */
 
         private void OnVerticallyScrolledCollection(object sender, ItemsViewScrolledEventArgs e)
         {
@@ -80,10 +81,12 @@ namespace CollectionViewDetective
             }
         }
 
-        private void OnHorizontallyScrolledTable(object sender, ScrolledEventArgs e)
-        {       
+        private void OnScrolled(object sender, ScrolledEventArgs e)
+        {
+            Debug.WriteLine($"Scrolled. scrollX: {e.ScrollX}  scrollY: {e.ScrollY}");
         }
 
+        /*
         protected override void OnBindingContextChanged()
         {
             base.OnBindingContextChanged();
@@ -113,6 +116,7 @@ namespace CollectionViewDetective
 
                 };
             }
-        }  
+        } 
+        */
     }
 }
