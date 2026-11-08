@@ -42,16 +42,17 @@ namespace CollectionViewDetective
 #endif
         private void DisplayCollectionView_HandlerChanged(object? sender, EventArgs e)
         {
-            Debug.WriteLine($"Handler Changed at {DateTime.Now:HH:mm:ss.fff}");
-            if (BindingContext is DisplayViewModel vm)
-            {
-#if ANDROID
+                      
+                Debug.WriteLine($"Handler Changed at {DateTime.Now:HH:mm:ss.fff}");
+                if (BindingContext is DisplayViewModel vm)
+                {
+                #if ANDROID
 
-                var type = DisplayCollectionView.Handler?.PlatformView?.GetType();
+                    var type = DisplayCollectionView.Handler?.PlatformView?.GetType();
 
-                _recyclerView = DisplayCollectionView.Handler?.PlatformView as RecyclerView;
+                    _recyclerView = DisplayCollectionView.Handler?.PlatformView as RecyclerView;
 
-                if (_recyclerView != null)
+                    if (_recyclerView != null)
                 {
                     _recyclerView.HasFixedSize = true;       // important. Prevents stuttering vertical scrolling
 
