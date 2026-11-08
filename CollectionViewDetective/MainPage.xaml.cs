@@ -1,5 +1,4 @@
 ﻿#if ANDROID
-using Android.Test.Suitebuilder.Annotation;
 using AndroidX.RecyclerView.Widget;
 using static AndroidX.RecyclerView.Widget.RecyclerView;
 #endif
@@ -14,58 +13,65 @@ namespace CollectionViewDetective
         private readonly DisplayViewModel vm;
         
     #if ANDROID
-        private RecyclerView? _recyclerView;      
-    #endif
+        private RecyclerView? _recyclerView;
+#endif
 
+#region region Constructor
         public MainPage(DisplayViewModel viewModel)
         {
-            InitializeComponent();
-            Loaded += DisplayPage_Loaded;
+            InitializeComponent();  
             vm = viewModel;
             BindingContext = vm;
+            DisplayCollectionView.HandlerChanged += DisplayCollectionView_HandlerChanged;
             vm.UiDispatcher = this.Dispatcher;
         }
-    #if ANDROID
+#endregion
+
+
+
+#if ANDROID
         private async void RecyclerView_LayoutChange(object? sender, Android.Views.View.LayoutChangeEventArgs e)
         {
-            Debug.WriteLine($"\r\nRecyclerView_LayoutChanged at {DateTime.Now:HHH:mm:ss.fff}\r\n");
-        }
-    #endif
-
-    private async void DisplayPage_Loaded(object? sender, EventArgs e)
-    {
-#if ANDROID
-           
-            var type = DisplayCollectionView.Handler?.PlatformView?.GetType();
-
-            _recyclerView = DisplayCollectionView.Handler?.PlatformView as RecyclerView;
-
             if (_recyclerView != null)
             {
-                _recyclerView.HasFixedSize = true;       // important. Prevents stuttering vertical scrolling
-
-                _recyclerView.LayoutChange += RecyclerView_LayoutChange;
-
-                _recyclerView.ViewTreeObserver.GlobalLayout += (_, _) =>
-                {
-                    Debug.WriteLine($"GlobalLayout {DateTime.Now:HH:mm:ss.fff}");
-                };
-                vm.RequestSuppressLayout = suppress =>
-                {
-                    _recyclerView?.SuppressLayout(suppress);
-
-                };
+                Debug.WriteLine($"\r\nRecyclerView_LayoutChanged at {DateTime.Now:HHH:mm:ss.fff}\r\n");
+                Debug.WriteLine($"ChildCount = {_recyclerView.ChildCount}");
             }
+        }
 
-            Debug.WriteLine($"\r\n\r\n Printing androidhandler \r\n\r\n");
-
-            Debug.WriteLine($"Type:      {type?.FullName}");
-            Debug.WriteLine($"BaseType:  {type?.BaseType?.FullName}");
-            Debug.WriteLine($"BaseType2: {type?.BaseType?.BaseType?.FullName}");
-            Debug.WriteLine($"Layout Manager is:  { _recyclerView?.GetLayoutManager()?.GetType().FullName}");
-            Debug.WriteLine($"\r\n\r\n Printed androidhandler \r\n\r\n");
-        
 #endif
+        private void DisplayCollectionView_HandlerChanged(object? sender, EventArgs e)
+        {
+            Debug.WriteLine($"Handler Changed at {DateTime.Now:HH:mm:ss.fff}");
+            if (BindingContext is DisplayViewModel vm)
+            {
+#if ANDROID
+
+                var type = DisplayCollectionView.Handler?.PlatformView?.GetType();
+
+                _recyclerView = DisplayCollectionView.Handler?.PlatformView as RecyclerView;
+
+                if (_recyclerView != null)
+                {
+                    _recyclerView.HasFixedSize = true;       // important. Prevents stuttering vertical scrolling
+
+                    _recyclerView.LayoutChange += RecyclerView_LayoutChange;
+
+                    _recyclerView.ViewTreeObserver.GlobalLayout += (_, _) =>
+                    {
+                        Debug.WriteLine($"GlobalLayout {DateTime.Now:HH:mm:ss.fff}");
+                    };
+                    vm.RequestSuppressLayout = suppress =>
+                    {
+                        Debug.WriteLine($"Suppressed Layout ({suppress}) {DateTime.Now:HH:mm:ss.fff}");
+                        _recyclerView?.SuppressLayout(suppress);
+
+                    };
+
+                    // vm.RequestSuppressLayout?.Invoke(true);
+                }
+#endif
+            }
         }
 
         private void OnVerticallyScrolledCollection(object sender, ItemsViewScrolledEventArgs e)
